@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" ></script>
+	<!-- Bootstrap theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<title>Login</title>
+</head>
+<body>
+
+<div class="navbar navbar-default">
+<div class="navbar-header">
+  
+  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+  </button>
+</div>
+<div class="navbar-collapse collapse"  >
+    <ul class="nav navbar-nav navbar-right">
+         <li><a href="#" id="logout" style="display: none;">Log Out</a></li>
+    </ul>
+</div>
+</div>
+<br>
+<div class="container">	
+  <form name="registration_form" id="registration_form" method="post" action="#" enctype="multipart/form-data" >
+  <div class="row">
+
+	<div class="col-sm-4">
+		<div class="form-group" method="post">
+	      <label for="email">Email</label>
+		  <input type="text" name="email" id="email" class="form-control" placeholder="Enter your email">
+		</div>
+		
+		<div class="form-group">
+	      <label for="password" >Password</label>
+		  <input type="password" name="password" id="password" class="form-control"  placeholder="Enter your password">
+		</div>
+		<button type="button" id="register" name="register" class="btn btn-success">Register Now</button>
+	</div><!-- end col -->
+	</form>
+	<div class="col-sm-4">
+		<img src="img/logo-removebg-preview.png">
+	</div>
+	<form name="login_form" id="login_form" method="post" action="#" enctype="multipart/form-data" >
+	<div class="col-sm-4">
+		<div class="form-group">
+	      <label for="email">Email</label>
+		  <input type="text" name="login_email" id="login_email" class="form-control" placeholder="Enter your email">
+		</div>
+		
+		<div class="form-group">
+	      <label for="password">Password</label>
+		  <input type="password" name="login_password" id="login_password" class="form-control"  placeholder="Enter your password">
+		</div>
+		<button type="button" id="login" name="login" class="btn btn-success">Login</button>
+	</div><!-- end col -->
+	
+  </div><!--  end row -->		
+  </form>
+</div>
+
+
+<br>
+<center>Developed by Arbor Preetham Rangu</center>
+</body>
+<script src="https://smtpjs.com/v3/smtp.js"></script>
+
+<script type="module">
+	
+	// Import the functions you need from the SDKs you need
+	import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
+	import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-analytics.js";
+	import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
+	
+	// TODO: Add SDKs for Firebase products that you want to use
+	// https://firebase.google.com/docs/web/setup#available-libraries
+
+	  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyD0Il3esCOZq3jyUIvjTZC4Cz_83yGGpHM",
+    authDomain: "shinerweb-auth-630c3.firebaseapp.com",
+    projectId: "shinerweb-auth-630c3",
+    storageBucket: "shinerweb-auth-630c3.appspot.com",
+    messagingSenderId: "775651699147",
+    appId: "1:775651699147:web:65e6e373e83c744d57ae4e",
+    measurementId: "G-1E0RR98HLR"
+  };
+
+	// Initialize Firebase
+	const app = initializeApp(firebaseConfig);
+	const analytics = getAnalytics(app);
+	const auth = getAuth();
+	console.log(app);
+
+	
+
+	//----- New Registration code start	  
+	document.getElementById("register").addEventListener("click", function() {
+		var email =  document.getElementById("email").value;
+		var password = document.getElementById("password").value;
+		//For new registration
+		createUserWithEmailAndPassword(auth, email, password)
+		.then((userCredential) => {
+		  // Signed in 
+		  const user = userCredential.user;
+		  console.log(user);
+		  alert("Registration successfully!!");
+		  // ...
+		})
+		
+		.catch((error) => {
+		  const errorCode = error.code;
+		  const errorMessage = error.message;
+		  // ..
+		  console.log(errorMessage);
+		  alert(error);
+		});		  		  
+	});
+	//----- End
+
+	//----- Login code start	  
+	document.getElementById("login").addEventListener("click", function() {
+		var email =  document.getElementById("login_email").value;
+		var password = document.getElementById("login_password").value;
+
+		signInWithEmailAndPassword(auth, email, password)
+		.then((userCredential) => {
+		  // Signed in 
+		  const user = userCredential.user;
+		  console.log(user);
+		  alert(user.email+" Login successfully!!!");
+		  document.getElementById('logout').style.display = 'block';
+		  // ...
+		})
+		.catch((error) => {
+		  const errorCode = error.code;
+		  const errorMessage = error.message;
+		  console.log(errorMessage);
+		  alert(errorMessage);
+		});		  		  
+	});
+	//----- End
+
+	//----- Logout code start	  
+	document.getElementById("logout").addEventListener("click", function() {
+		signOut(auth).then(() => {
+			// Sign-out successful.
+			console.log('Sign-out successful.');
+			alert('Sign-out successful.');
+			document.getElementById('logout').style.display = 'none';
+		  }).catch((error) => {
+			// An error happened.
+			console.log('An error happened.');
+		  });		  		  
+	});
+	//----- End
+
+
+   //Email Send
+
+	var btn = document.getElementById("register");
+	btn.addEventListener('click',function(e){
+		e.preventDefault()
+		var email = document.getElementById('email').value;
+		Email.send({
+	SecureToken: "e99c289a-61b9-4477-ac0b-30ff8e881ea7",
+    Host : "smtp.elasticemail.com",
+    Username : "neonviper250@gmail.com",
+    Password : "83291649E40363B5B6FA9B3EDAE26CD8C8D4",
+	Port: "2525",
+    To : document.getElementById("email").value,
+    From : "neonftw420@gmail.com",
+    Subject : "User Has Been Created",
+    Body : "Hi Your Arbor Account Has Been Created 	Thank You"
+}).then(
+  message => alert("Check Your Email To See Info")
+);
+
+	})
+
+	var btn = document.getElementById("login");
+	btn.addEventListener('click',function(e){
+		e.preventDefault()
+		Email.send({
+		SecureToken: "e99c289a-61b9-4477-ac0b-30ff8e881ea7",
+		Host : "smtp.elasticemail.com",
+		Username : "neonftw420@gmail.con",
+		Password : "7127426FFA52483500356F0494F68E015E0F",
+		Port: "2525",
+		To : document.getElementById("login_email").value,
+		From : "neonftw420@gmail.com",
+		Subject : "User Has Been Login", 
+		Body : "Hi Your Arbor User Has Been Logined at " + d
+		}).then(
+	message => alert("Check Your Email To See Info")
+	);
+
+	})
+
+	function showNotication() {
+    const notification = new Notification("Welcome To Arbor Page", {
+      icon: "img/favicon.png",
+      body: "Welcome To © Arbor International School Our School One Of The Best School In India And 50000+ Students Trusted © Arbor International School" 
+    })
+
+    notification.onclick = (event) => {
+      window.location.href = "https://neon123456.netlify.app/auth.html";
+    }
+  }
+
+  if(Notification.permission === "granted") {
+    showNotication();
+  } else if(Notification.permission !== "denied") {
+    Notification.requestPermission().then(permission=>{
+      if(permission === "granted") {
+        showNotication();
+      }
+    })
+  }
+
+// theres is no error for gmail.con
+
+	var d = new Date();
+
+	
+
+	console.log(d);
+
+
+	</script>
+</html>
